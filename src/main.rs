@@ -1,14 +1,22 @@
-pub mod nerdgraph;
+mod nerdgraph;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-  let client = nerdgraph::Client::new();
+    let client = nerdgraph::Client::new();
 
-  let maybe_user = client.user_info().await;
+    let actor = client.actor_info().await;
 
-  if let Some(user) = maybe_user {
-    println!("Name: {}", user.name);
-  }
+    if let Some(actor) = actor {
+        println!("Num of Accounts: {}", actor.accounts.len());
+        println!("First Account: {} ({})", actor.accounts[0].name, actor.accounts[0].id);
+        println!("User name: {}", actor.user.name);
+    }
 
-  Ok(())
+    let results = client.nrql(265881,"SElECT count(*) FROM Transaction".to_string()).await;
+
+    if let Some(results) = results {
+        println!("results: {:?}", results);
+    }
+
+    Ok(())
 }
