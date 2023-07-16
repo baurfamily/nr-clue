@@ -42,12 +42,16 @@ pub struct NrqlAccount {
     pub nrql: Nrql
 }
 
-// #[derive(Deserialize)]
-// enum JsonValue {
-//     Number(i32),
-//     String(String),
-// }
-type Result = HashMap<String,i32>;
+#[derive(Deserialize,Debug)]
+#[serde(untagged)] // serde looks at subfields to determine which one to use
+pub enum JsonValue {
+    Integer(i32),
+    Float(f64),
+    String(String),
+    Boolean(bool),
+}
+
+type Result = HashMap<String,JsonValue>;
 type Results = Vec<Result>;
 
 #[derive(Deserialize)]
