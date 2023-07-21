@@ -12,10 +12,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("User name: {}", actor.user.name);
     }
 
-    let results = client.nrql(265881,"SElECT count(*) FROM Transaction".to_string()).await;
+    let results = client.nrql("SElECT count(*) FROM Transaction FACET name".to_string()).await.unwrap();
 
-    if let Some(results) = results {
-        println!("results: {:?}", results);
+    // don't do unwrap ^^^ check the option first!
+
+    // if let Some(results) = results {
+    //     println!("results: {:?}", results);
+    // }
+
+    for hash in results.iter() {
+        println!("-------");
+        for (key, value) in hash {
+            println!("{key} -> {value:?}");
+        }
     }
 
     Ok(())

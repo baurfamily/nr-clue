@@ -122,7 +122,15 @@ impl Client {
         }
     }
 
-    pub async fn nrql(&self, account_id: i32, nrql_query: String) -> Option<Results> {
+    pub async fn nrql(&self, nrql_query: String) -> Option<Results> {
+        if let Ok(account_id) = env::var("NR_ACCOUNT_ID") {
+            if let Ok(account_id) = account_id.parse::<i32>() {
+                self.nrql_from_account(account_id, nrql_query).await
+            } else { None }
+        } else { None }
+    }
+
+    pub async fn nrql_from_account(&self, account_id: i32, nrql_query: String) -> Option<Results> {
         let query = "
             query nrClueGetNrql($account_id: Int!, $nrql_query: Nrql!) {
                 actor {
