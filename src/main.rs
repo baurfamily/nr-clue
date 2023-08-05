@@ -1,8 +1,6 @@
 mod nerdgraph;
 mod ui;
 
-
-
 // #[tokio::main]
 // async fn main() -> Result<(), Box<dyn std::error::Error>> {
 //     let client = nerdgraph::Client::new();

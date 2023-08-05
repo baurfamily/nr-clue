@@ -33,15 +33,15 @@ pub struct InfoActor {
 
 #[derive(Deserialize)]
 pub struct NrqlActor {
-    pub account: NrqlAccount
+    pub account: NrqlAccount,
 }
 
 #[derive(Deserialize)]
 pub struct NrqlAccount {
-    pub nrql: Nrql
+    pub nrql: Nrql,
 }
 
-#[derive(Deserialize,Debug)]
+#[derive(Deserialize, Debug)]
 #[serde(untagged)] // serde looks at subfields to determine which one to use
 pub enum JsonValue {
     Integer(i32),
@@ -50,13 +50,13 @@ pub enum JsonValue {
     Boolean(bool),
 }
 
-type Result = HashMap<String,JsonValue>;
+type Result = HashMap<String, JsonValue>;
 type Results = Vec<Result>;
 
 #[derive(Deserialize)]
 pub struct Nrql {
     pub nrql: String,
-    pub results: Results
+    pub results: Results,
 }
 
 #[derive(Deserialize)]
@@ -91,11 +91,10 @@ impl Client {
         let mut headers = HashMap::new();
         headers.insert("api-key", &api_key);
 
-        let client: gql_client::Client = gql_client::Client::new_with_headers(&api_endpoint, headers);
+        let client: gql_client::Client =
+            gql_client::Client::new_with_headers(&api_endpoint, headers);
 
-        Self {
-            client,
-        }
+        Self { client }
     }
 
     pub async fn actor_info(&self) -> Option<InfoActor> {
@@ -111,11 +110,9 @@ impl Client {
         let data = self.client.query::<Data>(query).await.unwrap();
 
         match data {
-            Some(data) => {
-                match data.actor {
-                    Actor::Info(actor) => Some(actor),
-                    Actor::Nrql(_) => None,
-                }
+            Some(data) => match data.actor {
+                Actor::Info(actor) => Some(actor),
+                Actor::Nrql(_) => None,
             },
             None => None,
         }
@@ -135,17 +132,22 @@ impl Client {
             }
         ";
 
-        let vars = Vars { account_id, nrql_query };
-        let data = self.client.query_with_vars::<Data,Vars>(query, vars).await.unwrap();
+        let vars = Vars {
+            account_id,
+            nrql_query,
+        };
+        let data = self
+            .client
+            .query_with_vars::<Data, Vars>(query, vars)
+            .await
+            .unwrap();
         // let data = self.client.query::<Data>(query).await.unwrap();
 
         match data {
-            Some(data) => {
-                match data.actor {
-                    Actor::Info(_) => None,
-                    Actor::Nrql(actor) => Some(actor.account.nrql.results),
-                }
-            }
+            Some(data) => match data.actor {
+                Actor::Info(_) => None,
+                Actor::Nrql(actor) => Some(actor.account.nrql.results),
+            },
             None => None,
         }
     }

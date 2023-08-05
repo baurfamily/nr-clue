@@ -1,14 +1,11 @@
-
 use tui::{
     layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     text::{Span, Spans},
-    widgets::{
-        Block, BorderType, Borders, Paragraph, Tabs,
-    },
+    widgets::{Block, BorderType, Borders, Paragraph, Tabs},
 };
 
-use crate::ui::{MenuItem};
+use crate::ui::MenuItem;
 
 impl From<MenuItem> for usize {
     fn from(input: MenuItem) -> usize {
@@ -20,7 +17,6 @@ impl From<MenuItem> for usize {
         }
     }
 }
-
 
 pub fn home<'a>() -> Paragraph<'a> {
     let home = Paragraph::new(vec![
@@ -47,26 +43,23 @@ pub fn home<'a>() -> Paragraph<'a> {
     home
 }
 
-
 pub fn layout(size: Rect) -> Vec<Rect> {
-  Layout::default()
-      .direction(Direction::Vertical)
-      .margin(2)
-      .constraints(
-          [
-              Constraint::Length(3),
-              Constraint::Min(2),
-              Constraint::Length(3),
-          ]
-          .as_ref(),
-      )
-      .split(size)
+    Layout::default()
+        .direction(Direction::Vertical)
+        .margin(2)
+        .constraints(
+            [
+                Constraint::Length(3),
+                Constraint::Min(2),
+                Constraint::Length(3),
+            ]
+            .as_ref(),
+        )
+        .split(size)
 }
-
 
 pub fn menu<'a>(active_menu_item: MenuItem) -> Tabs<'a> {
     let menu_titles = vec!["Home", "query", "chart", "settings", "Quit"];
-
 
     let menu = menu_titles
         .iter()
@@ -90,53 +83,44 @@ pub fn menu<'a>(active_menu_item: MenuItem) -> Tabs<'a> {
         .style(Style::default().fg(Color::White))
         .highlight_style(Style::default().fg(Color::Yellow))
         .divider(Span::raw("|"))
-
- }
-
+}
 
 pub fn status<'a>() -> Paragraph<'a> {
-   Paragraph::new("current status goes here")
-   .block(
-    Block::default()
-    .borders(Borders::ALL)
-    .style(Style::default().fg(Color::White))
-    .title("Home")
-    .border_type(BorderType::Plain),
-   )
+    Paragraph::new("current status goes here").block(
+        Block::default()
+            .borders(Borders::ALL)
+            .style(Style::default().fg(Color::White))
+            .title("Home")
+            .border_type(BorderType::Plain),
+    )
 }
 
 pub fn query<'a>() -> Paragraph<'a> {
-    Paragraph::new("type query here")
-    .block(
-     Block::default()
-     .borders(Borders::ALL)
-     .style(Style::default().fg(Color::White))
-     .title("Home")
-     .border_type(BorderType::Plain),
+    Paragraph::new("type query here").block(
+        Block::default()
+            .borders(Borders::ALL)
+            .style(Style::default().fg(Color::White))
+            .title("Home")
+            .border_type(BorderType::Plain),
     )
- }
-
-
+}
 
 pub fn chart<'a>() -> Paragraph<'a> {
-    Paragraph::new("data chart goes here")
-    .block(
-     Block::default()
-     .borders(Borders::ALL)
-     .style(Style::default().fg(Color::White))
-     .title("Home")
-     .border_type(BorderType::Plain),
+    Paragraph::new("data chart goes here").block(
+        Block::default()
+            .borders(Borders::ALL)
+            .style(Style::default().fg(Color::White))
+            .title("Home")
+            .border_type(BorderType::Plain),
     )
- }
-
+}
 
 pub fn settings<'a>() -> Paragraph<'a> {
-    Paragraph::new("settings go here")
-    .block(
-     Block::default()
-     .borders(Borders::ALL)
-     .style(Style::default().fg(Color::White))
-     .title("Home")
-     .border_type(BorderType::Plain),
+    Paragraph::new("settings go here").block(
+        Block::default()
+            .borders(Borders::ALL)
+            .style(Style::default().fg(Color::White))
+            .title("Home")
+            .border_type(BorderType::Plain),
     )
- }
+}
