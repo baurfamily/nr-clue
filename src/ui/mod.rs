@@ -8,24 +8,20 @@ use std::io;
 use std::sync::mpsc;
 use std::thread;
 use std::time::{Duration, Instant};
-use thiserror::Error;
 use tui::{backend::CrosstermBackend,Terminal};
-
-
-#[derive(Error, Debug)]
-pub enum Error {
-    #[error("error reading the DB file: {0}")]
-    ReadDBError(#[from] io::Error),
-    #[error("error parsing the DB file: {0}")]
-    ParseDBError(#[from] serde_json::Error),
-}
 
 enum Event<I> {
     Input(I),
     Tick,
 }
 
-
+#[derive(Copy, Clone, Debug)]
+pub enum MenuItem {
+    Home,
+    Query,
+    Chart,
+    Settings,
+}
 
 pub fn event_loop() -> Result<(), Box<dyn std::error::Error>> {
   enable_raw_mode().expect("can run in raw mode");
@@ -58,7 +54,7 @@ pub fn event_loop() -> Result<(), Box<dyn std::error::Error>> {
   let mut terminal = Terminal::new(backend)?;
   terminal.clear()?;
 
-  let mut active_menu_item = build::MenuItem::Home;
+  let mut active_menu_item = MenuItem::Home;
 
   loop {
       terminal.draw(|rect| {
@@ -66,19 +62,19 @@ pub fn event_loop() -> Result<(), Box<dyn std::error::Error>> {
           let chunks = build::layout(size);
 
           match active_menu_item {
-              build::MenuItem::Home => rect.render_widget(
+              MenuItem::Home => rect.render_widget(
                   build::home(),
                   chunks[1]
               ),
-              build::MenuItem::Query => rect.render_widget(
+              MenuItem::Query => rect.render_widget(
                   build::query(),
                   chunks[1]
               ),
-              build::MenuItem::Chart => rect.render_widget(
+              MenuItem::Chart => rect.render_widget(
                   build::chart(),
                   chunks[1]
               ),
-              build::MenuItem::Settings => rect.render_widget(
+              MenuItem::Settings => rect.render_widget(
                   build::settings(),
                   chunks[1]
               ),
@@ -95,10 +91,10 @@ pub fn event_loop() -> Result<(), Box<dyn std::error::Error>> {
 
       match rx.recv()? {
           Event::Input(event) => match event.code {
-              KeyCode::Char('H') => active_menu_item = build::MenuItem::Home,
-              KeyCode::Char('q') => active_menu_item = build::MenuItem::Query,
-              KeyCode::Char('c') => active_menu_item = build::MenuItem::Chart,
-              KeyCode::Char('s') => active_menu_item = build::MenuItem::Settings,
+              KeyCode::Char('H') => active_menu_item = MenuItem::Home,
+              KeyCode::Char('q') => active_menu_item = MenuItem::Query,
+              KeyCode::Char('c') => active_menu_item = MenuItem::Chart,
+              KeyCode::Char('s') => active_menu_item = MenuItem::Settings,
               KeyCode::Char('Q') => {
                   disable_raw_mode()?;
                   terminal.show_cursor()?;

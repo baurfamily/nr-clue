@@ -1,4 +1,3 @@
-// pub mod nerdgraph {
 use gql_client;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
