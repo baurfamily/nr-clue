@@ -1,7 +1,7 @@
-use tui::{
+use ratatui::{
     layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
-    text::{Span, Spans},
+    text::{ Line, Span},
     widgets::{Block, BorderType, Borders, Paragraph, Tabs},
 };
 
@@ -20,17 +20,17 @@ impl From<MenuItem> for usize {
 
 pub fn home<'a>() -> Paragraph<'a> {
     let home = Paragraph::new(vec![
-        Spans::from(vec![Span::raw("")]),
-        Spans::from(vec![Span::raw("Welcome")]),
-        Spans::from(vec![Span::raw("")]),
-        Spans::from(vec![Span::raw("to")]),
-        Spans::from(vec![Span::raw("")]),
-        Spans::from(vec![Span::styled(
+        Line::from(""),
+        Line::from(""),
+        Line::from("Welcome"),
+        Line::from("to"),
+        Line::from(""),
+        Line::styled(
             "pet-CLI",
             Style::default().fg(Color::LightBlue),
-        )]),
-        Spans::from(vec![Span::raw("")]),
-        Spans::from(vec![Span::raw("Press 'p' to access pets, 'a' to add random new pets and 'd' to delete the currently selected pet.")]),
+        ),
+        Line::from(""),
+        Line::from("Press 'p' to access pets, 'a' to add random new pets and 'd' to delete the currently selected pet."),
     ])
     .alignment(Alignment::Center)
     .block(
@@ -56,6 +56,7 @@ pub fn layout(size: Rect) -> Vec<Rect> {
             .as_ref(),
         )
         .split(size)
+        .to_vec()
 }
 
 pub fn menu<'a>(active_menu_item: MenuItem) -> Tabs<'a> {
@@ -65,7 +66,7 @@ pub fn menu<'a>(active_menu_item: MenuItem) -> Tabs<'a> {
         .iter()
         .map(|t| {
             let (first, rest) = t.split_at(1);
-            Spans::from(vec![
+            Line::from(vec![
                 Span::styled(
                     first,
                     Style::default()
@@ -104,6 +105,17 @@ pub fn query<'a>() -> Paragraph<'a> {
             .border_type(BorderType::Plain),
     )
 }
+
+// pub fn query<'a>() -> dyn Widget<'a> {
+//     let mut textarea = TextArea::default();
+//     textarea.set_block(
+//         Block::default()
+//             .borders(Borders::ALL)
+//             .title("Crossterm Minimal Example"),
+//     );
+
+//     textarea.widget()
+// }
 
 pub fn chart<'a>() -> Paragraph<'a> {
     Paragraph::new("data chart goes here").block(
